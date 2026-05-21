@@ -66,7 +66,7 @@ export default function OrderForm({ mode, orderId, initial }: OrderFormProps) {
       const p = products.find(p => p.id === Number(value));
       if (p) { updated[i] = { ...updated[i], productId: p.id, name: p.name, price: p.price }; }
     } else {
-      (updated[i] as Record<string, unknown>)[field] = value;
+      (updated[i] as unknown as Record<string, unknown>)[field] = value;
     }
     setItems(updated);
   };

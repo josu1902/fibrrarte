@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
         notes: notes || null,
         items: {
-          create: items.map((i: { name: string; price: number; quantity: number }) => ({
+          create: items.map((i: { name: string; price: number; quantity: number; productId?: number }) => ({
             name: i.name,
             price: i.price,
             quantity: i.quantity,
