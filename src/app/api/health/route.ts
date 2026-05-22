@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   const info = {
@@ -11,7 +11,7 @@ export async function GET() {
   };
 
   try {
-    await pool.execute('SELECT 1');
+    await prisma.$queryRaw`SELECT 1`;
     info.dbStatus = 'CONECTADO OK';
   } catch (e) {
     info.dbStatus = 'ERROR';
