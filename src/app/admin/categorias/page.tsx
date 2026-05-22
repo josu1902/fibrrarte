@@ -1,12 +1,16 @@
-import { prisma } from '@/lib/prisma';
+import pool from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 import { Tag } from 'lucide-react';
 import CategoryManager from './CategoryManager';
 
 export default async function CategoriasPage() {
-  const categories = await prisma.category.findMany({
-    orderBy: { order: 'asc' },
-    include: { _count: { select: { products: true } } },
-  });
+  const [rows] = await pool.execute<RowDataPacket[]>(`
+    SELECT c.id, c.name, c.slug, c.\`order\`, c.createdAt, COUNT(p.id) as productCount
+    FROM Category c LEFT JOIN Product p ON p.categoryId = c.id
+    GROUP BY c.id ORDER BY c.\`order\` ASC
+  `);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const categories = rows.map((r: any) => ({ id: r.id, name: r.name, slug: r.slug, order: r.order, createdAt: r.createdAt, _count: { products: Number(r.productCount) } }));
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
@@ -19,7 +23,6 @@ export default async function CategoriasPage() {
           <p className="text-brown-medium text-sm mt-0.5">{categories.length} categoría(s) en total</p>
         </div>
       </div>
-
       <CategoryManager initial={categories} />
     </div>
   );

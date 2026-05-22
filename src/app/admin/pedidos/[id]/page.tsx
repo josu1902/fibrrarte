@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { prisma } from '@/lib/prisma';
+import pool from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 import OrderForm from '../OrderForm';
 import OrderStatusBadge from '../OrderStatusBadge';
 import PrintActions from './PrintActions';
@@ -14,22 +15,25 @@ export default async function PedidoPage({ params }: { params: { id: string } })
   const id = parseInt(params.id);
   if (isNaN(id)) notFound();
 
-  const order = await prisma.order.findUnique({ where: { id }, include: { items: true } });
-  if (!order) notFound();
+  const [orders] = await pool.execute<RowDataPacket[]>('SELECT * FROM `Order` WHERE id = ?', [id]);
+  if (!orders[0]) notFound();
+  const order = orders[0];
+
+  const [items] = await pool.execute<RowDataPacket[]>('SELECT * FROM OrderItem WHERE orderId = ?', [id]);
 
   const initial = {
     clientName:   order.clientName,
     clientPhone:  order.clientPhone  || '',
     clientEmail:  order.clientEmail  || '',
     status:       order.status,
-    deliveryDate: order.deliveryDate ? order.deliveryDate.toISOString().split('T')[0] : '',
+    deliveryDate: order.deliveryDate ? new Date(order.deliveryDate).toISOString().split('T')[0] : '',
     notes:        order.notes || '',
-    discount:     order.discount.toString(),
-    deposit:      order.deposit.toString(),
-    items: order.items.map(i => ({
+    discount:     String(order.discount),
+    deposit:      String(order.deposit),
+    items: items.map((i: RowDataPacket) => ({
       productId: i.productId || undefined,
       name:      i.name,
-      price:     i.price.toString(),
+      price:     String(i.price),
       quantity:  i.quantity,
     })),
   };
@@ -52,7 +56,6 @@ export default async function PedidoPage({ params }: { params: { id: string } })
         </div>
       </div>
 
-      {/* Resumen rápido */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
           { label: 'Total', value: fmt(order.total), color: 'text-brown-dark' },

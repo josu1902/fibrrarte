@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { comparePassword, generateToken } from '@/lib/auth';
+import pool from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,13 +9,14 @@ export async function POST(request: NextRequest) {
     const { username, password } = body;
 
     if (!username || !password) {
-      return NextResponse.json(
-        { error: 'Username and password are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { username } });
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      'SELECT * FROM User WHERE username = ? LIMIT 1',
+      [username]
+    );
+    const user = rows[0];
 
     if (!user) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
@@ -36,7 +38,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     });
 
