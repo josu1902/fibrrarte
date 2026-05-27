@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
