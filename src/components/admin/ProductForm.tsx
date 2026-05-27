@@ -7,6 +7,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import ImageUpload from './ImageUpload';
+import {
+  createProductAction,
+  updateProductAction,
+  saveImageAction,
+  deleteImageAction,
+  updateImagesAction,
+} from '@/app/actions/products';
 
 const productSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido').max(200, 'Máximo 200 caracteres'),
@@ -54,11 +61,12 @@ interface ProductData {
 interface ProductFormProps {
   mode: 'create' | 'edit';
   product?: ProductData;
+  initialCategories?: Category[];
 }
 
-export default function ProductForm({ mode, product }: ProductFormProps) {
+export default function ProductForm({ mode, product, initialCategories = [] }: ProductFormProps) {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [images, setImages] = useState<ProductImage[]>(product?.images || []);
   const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,82 +94,61 @@ export default function ProductForm({ mode, product }: ProductFormProps) {
   const activeValue = watch('active');
 
   useEffect(() => {
-    fetch('/api/categories')
-      .then((r) => r.json())
-      .then(setCategories)
-      .catch(() => toast.error('Error al cargar categorías'));
-  }, []);
+    if (initialCategories.length === 0) {
+      fetch('/api/categories')
+        .then((r) => r.json())
+        .then(setCategories)
+        .catch(() => toast.error('Error al cargar categorías'));
+    }
+  }, [initialCategories.length]);
 
   const onSubmit = async (data: ProductFormValues) => {
     setIsSubmitting(true);
 
     try {
       const payload = {
-        ...data,
+        name: data.name,
+        description: data.description,
         price: parseFloat(data.price),
         categoryId: parseInt(data.categoryId),
         order: data.order ? parseInt(data.order) : 0,
         measures: data.measures || null,
         whatsappMsg: data.whatsappMsg || null,
+        active: data.active,
       };
 
       let productId = product?.id;
 
-      const parseError = async (res: Response, fallback: string) => {
-        try { const e = await res.json(); return e.error || fallback; } catch { return fallback; }
-      };
-
       if (mode === 'create') {
-        const res = await fetch('/api/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(await parseError(res, 'Error al crear producto'));
-        const created = await res.json();
-        productId = created.id;
+        const result = await createProductAction(payload);
+        productId = result.id;
       } else if (productId) {
-        const res = await fetch(`/api/products/${productId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(await parseError(res, 'Error al actualizar producto'));
+        await updateProductAction(productId, payload);
       }
 
-      // Save images
-      if (productId && images.length > 0) {
-        // 1. Upload new images
+      if (productId) {
+        // Save new images
         const newImages = images.filter((img) => img.isNew);
         for (const img of newImages) {
-          await fetch('/api/products/' + productId + '/images', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: img.url, alt: img.alt, isPrimary: img.isPrimary }),
-          });
+          await saveImageAction(productId, img.url, img.alt || null, img.isPrimary);
         }
 
-        // 2. Eliminar imágenes borradas
+        // Delete removed images
         for (const imageId of deletedImageIds) {
-          await fetch(`/api/products/${productId}/images?imageId=${imageId}`, {
-            method: 'DELETE',
-          });
+          await deleteImageAction(imageId, productId);
         }
 
-        // 3. Update existing images (isPrimary + order)
+        // Update existing image order/primary
         const existingImages = images.filter((img) => !img.isNew && img.id);
         if (existingImages.length > 0) {
-          await fetch('/api/products/' + productId + '/images', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              updates: existingImages.map((img, i) => ({
-                id: img.id,
-                isPrimary: img.isPrimary,
-                order: i,
-              })),
-            }),
-          });
+          await updateImagesAction(
+            productId,
+            existingImages.map((img, i) => ({
+              id: img.id!,
+              isPrimary: img.isPrimary,
+              order: i,
+            }))
+          );
         }
       }
 

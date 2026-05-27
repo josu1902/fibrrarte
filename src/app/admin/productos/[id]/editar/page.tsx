@@ -8,30 +8,24 @@ interface PageProps {
   params: { id: string };
 }
 
-async function getProduct(id: number) {
-  return prisma.product.findUnique({
-    where: { id },
-    include: {
-      category: true,
-      images: {
-        orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }],
-      },
-    },
-  });
-}
-
 export default async function EditarProductoPage({ params }: PageProps) {
   const id = parseInt(params.id);
   if (isNaN(id)) notFound();
 
-  const product = await getProduct(id);
+  const [product, categories] = await Promise.all([
+    prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] },
+      },
+    }),
+    prisma.category.findMany({ orderBy: { order: 'asc' } }),
+  ]);
+
   if (!product) notFound();
 
-  // Convert Decimal to string for serialization
-  const serializedProduct = {
-    ...product,
-    price: product.price.toString(),
-  };
+  const serializedProduct = { ...product, price: product.price.toString() };
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -47,7 +41,7 @@ export default async function EditarProductoPage({ params }: PageProps) {
         <p className="text-brown-medium text-sm mt-1">{product.name}</p>
       </div>
 
-      <ProductForm mode="edit" product={serializedProduct} />
+      <ProductForm mode="edit" product={serializedProduct} initialCategories={categories} />
     </div>
   );
 }
