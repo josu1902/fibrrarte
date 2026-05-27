@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState } from 'react';
 import { Ruler, ArrowRight } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa6';
@@ -57,12 +56,11 @@ export default function ProductCard({ product }: { product: Product }) {
       {/* Imagen — clickeable → detalle */}
       <Link href={`/productos/${product.id}`} className="block relative w-full aspect-square bg-cream overflow-hidden">
         {primaryImage && !imgError ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={primaryImage.url}
             alt={primaryImage.alt || product.name}
-            fill
-            className="object-contain group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
             onError={() => setImgError(true)}
           />
         ) : (
