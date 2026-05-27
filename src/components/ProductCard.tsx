@@ -54,37 +54,39 @@ export default function ProductCard({ product }: { product: Product }) {
     <div className="bg-cream rounded-2xl overflow-hidden border border-beige hover:border-brown-light/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col group">
 
       {/* Imagen — clickeable → detalle */}
-      <Link href={`/productos/${product.id}`} className="block relative w-full aspect-square bg-cream overflow-hidden">
-        {primaryImage && !imgError ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={primaryImage.url}
-            alt={primaryImage.alt || product.name}
-            className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-brown-light/40">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            <span className="text-xs mt-2">Sin imagen</span>
-          </div>
-        )}
+      <Link href={`/productos/${product.id}`} className="block overflow-hidden">
+        <div className="relative h-52 bg-beige">
+          {primaryImage && !imgError ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={primaryImage.url}
+              alt={primaryImage.alt || product.name}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div style={{ position: 'absolute', inset: 0 }} className="flex flex-col items-center justify-center text-brown-light/40">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span className="text-xs mt-2">Sin imagen</span>
+            </div>
+          )}
 
-        {/* Badge categoría */}
-        <span className="absolute top-3 left-3 bg-brown-dark/75 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full">
-          {product.category.name}
-        </span>
-
-        {/* Badge "Ver más" hover */}
-        <div className="absolute inset-0 bg-brown-dark/0 group-hover:bg-brown-dark/20 transition-all duration-300 flex items-center justify-center">
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-brown-dark text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-1">
-            Ver detalle <ArrowRight size={14} />
+          {/* Badge categoría */}
+          <span className="absolute top-3 left-3 z-10 bg-brown-dark/75 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full">
+            {product.category.name}
           </span>
+
+          {/* Badge "Ver más" hover */}
+          <div className="absolute inset-0 z-10 bg-brown-dark/0 group-hover:bg-brown-dark/20 transition-all duration-300 flex items-center justify-center">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-brown-dark text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-1">
+              Ver detalle <ArrowRight size={14} />
+            </span>
+          </div>
         </div>
       </Link>
 
