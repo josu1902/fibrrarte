@@ -60,7 +60,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <img
             src={primaryImage.url}
             alt={primaryImage.alt || product.name}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
             onError={() => setImgError(true)}
           />
         ) : (
