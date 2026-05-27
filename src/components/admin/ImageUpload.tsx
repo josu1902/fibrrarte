@@ -27,10 +27,15 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
   const uploadFile = async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('upload_preset', 'fibrarte');
+    formData.append('folder', 'fibrarte');
     try {
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const res = await fetch(
+        'https://api.cloudinary.com/v1_1/dzykkbjhs/image/upload',
+        { method: 'POST', body: formData }
+      );
       if (!res.ok) { toast.error('Error al subir imagen'); return null; }
-      return (await res.json()).url;
+      return (await res.json()).secure_url;
     } catch {
       toast.error('Error de conexión');
       return null;

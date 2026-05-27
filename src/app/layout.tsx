@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://fibrarte.com.ar'),
   title: 'Fibrarte - Productos Personalizados en MDF',
   description:
     'Fibrarte: productos artesanales personalizados en MDF y fibrofácil. Souvenirs, imanes, portacelulares, llaveros y más, hechos con dedicación en Salta Capital, Argentina.',

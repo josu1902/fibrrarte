@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { Ruler, ArrowRight } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa6';
 
@@ -41,6 +42,7 @@ function formatPrice(price: string | number): string {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+  const [imgError, setImgError] = useState(false);
   const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP || '5493875717430';
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
   const waText = product.whatsappMsg || `Hola! Me interesa el producto: ${product.name}`;
@@ -54,13 +56,14 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Imagen — clickeable → detalle */}
       <Link href={`/productos/${product.id}`} className="block relative w-full aspect-square bg-cream overflow-hidden">
-        {primaryImage ? (
+        {primaryImage && !imgError ? (
           <Image
             src={primaryImage.url}
             alt={primaryImage.alt || product.name}
             fill
             className="object-contain group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            onError={() => setImgError(true)}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-brown-light/40">

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
+import { deleteFromCloudinary } from '@/lib/cloudinary';
 
 interface RouteContext {
   params: { id: string };
@@ -96,9 +97,15 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: 'Invalid image ID' }, { status: 400 });
     }
 
+    const image = await prisma.productImage.findUnique({ where: { id: imageId } });
+
     await prisma.productImage.delete({
       where: { id: imageId, productId },
     });
+
+    if (image?.url) {
+      await deleteFromCloudinary(image.url).catch(() => undefined);
+    }
 
     return NextResponse.json({ message: 'Image deleted' });
   } catch (error) {
