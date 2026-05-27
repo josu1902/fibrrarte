@@ -17,7 +17,9 @@ export async function GET() {
       orderBy: [{ category: { order: 'asc' } }, { order: 'asc' }, { createdAt: 'desc' }],
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: { 'Cache-Control': 'no-store' },
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json({ error: 'Error fetching products' }, { status: 500 });
