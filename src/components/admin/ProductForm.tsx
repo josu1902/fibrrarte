@@ -107,16 +107,17 @@ export default function ProductForm({ mode, product }: ProductFormProps) {
 
       let productId = product?.id;
 
+      const parseError = async (res: Response, fallback: string) => {
+        try { const e = await res.json(); return e.error || fallback; } catch { return fallback; }
+      };
+
       if (mode === 'create') {
         const res = await fetch('/api/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || 'Error al crear producto');
-        }
+        if (!res.ok) throw new Error(await parseError(res, 'Error al crear producto'));
         const created = await res.json();
         productId = created.id;
       } else if (productId) {
@@ -125,10 +126,7 @@ export default function ProductForm({ mode, product }: ProductFormProps) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || 'Error al actualizar producto');
-        }
+        if (!res.ok) throw new Error(await parseError(res, 'Error al actualizar producto'));
       }
 
       // Save images
