@@ -22,7 +22,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
-  price: string | number;
+  price: string | number | { toString(): string };
   measures: string | null;
   whatsappMsg: string | null;
   categoryId: number;
@@ -30,8 +30,8 @@ interface Product {
   images: ProductImage[];
 }
 
-function formatPrice(price: string | number): string {
-  const num = typeof price === 'string' ? parseFloat(price) : price;
+function formatPrice(price: string | number | { toString(): string }): string {
+  const num = parseFloat(price.toString());
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
     currency: 'ARS',
