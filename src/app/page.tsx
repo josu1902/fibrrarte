@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const [products, categories] = await Promise.all([
+  const [rawProducts, categories] = await Promise.all([
     prisma.product.findMany({
       where: { active: true },
       include: {
@@ -19,6 +19,18 @@ export default async function Home() {
     }),
     prisma.category.findMany({ orderBy: { order: 'asc' } }),
   ]);
+
+  const products = rawProducts.map((p) => ({
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    price: p.price.toString(),
+    measures: p.measures,
+    whatsappMsg: p.whatsappMsg,
+    categoryId: p.categoryId,
+    category: { id: p.category.id, name: p.category.name, slug: p.category.slug },
+    images: p.images.map((img) => ({ id: img.id, url: img.url, alt: img.alt, isPrimary: img.isPrimary })),
+  }));
 
   return (
     <main className="min-h-screen">
