@@ -27,15 +27,10 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
   const uploadFile = async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'fibrarte');
-    formData.append('folder', 'fibrarte');
     try {
-      const res = await fetch(
-        'https://api.cloudinary.com/v1_1/dzykkbjhs/image/upload',
-        { method: 'POST', body: formData }
-      );
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
       if (!res.ok) { toast.error('Error al subir imagen'); return null; }
-      return (await res.json()).secure_url;
+      return (await res.json()).url;
     } catch {
       toast.error('Error de conexión');
       return null;
@@ -67,7 +62,6 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
 
   const handleRemove = (index: number) => {
     const image = images[index];
-    // Si tiene id es una imagen existente en BD — notificar para borrar
     if (image.id && onDelete) onDelete(image.id);
     const updated = images.filter((_, i) => i !== index);
     if (image.isPrimary && updated.length > 0) updated[0].isPrimary = true;
@@ -88,7 +82,6 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
 
   return (
     <div className="space-y-4">
-      {/* Drop zone */}
       <div
         onDrop={handleDrop}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -124,7 +117,6 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
         </div>
       </div>
 
-      {/* Image previews */}
       {images.length > 0 && (
         <>
           <p className="text-xs text-brown-medium/60">
@@ -138,16 +130,15 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
                   image.isPrimary ? 'border-brown-medium shadow-md' : 'border-beige'
                 }`}
               >
-                {/* Número de orden */}
                 <div className="absolute top-1.5 right-1.5 z-10 bg-black/50 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
                   {index + 1}
                 </div>
 
                 <div className="relative h-28">
-                  <Image src={image.url} alt={image.alt || `Imagen ${index + 1}`} fill className="object-cover" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={image.url} alt={image.alt || `Imagen ${index + 1}`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
 
-                {/* Badge principal */}
                 {image.isPrimary && (
                   <div className="absolute top-1.5 left-1.5 z-10 bg-brown-dark/85 text-cream text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
                     <Star size={9} fill="currentColor" />
@@ -155,49 +146,17 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
                   </div>
                 )}
 
-                {/* Barra de controles */}
                 <div className="bg-white/95 border-t border-beige flex items-center justify-between px-1 py-1">
-                  {/* Mover izquierda */}
-                  <button
-                    type="button"
-                    onClick={() => moveImage(index, 'left')}
-                    disabled={index === 0}
-                    className="p-1 rounded hover:bg-beige text-brown-medium disabled:opacity-20 transition-colors"
-                    title="Mover atrás"
-                  >
+                  <button type="button" onClick={() => moveImage(index, 'left')} disabled={index === 0} className="p-1 rounded hover:bg-beige text-brown-medium disabled:opacity-20 transition-colors" title="Mover atrás">
                     <ChevronLeft size={15} />
                   </button>
-
-                  {/* Estrella / principal */}
-                  <button
-                    type="button"
-                    onClick={() => handleSetPrimary(index)}
-                    className={`p-1 rounded transition-colors ${
-                      image.isPrimary ? 'text-brown-dark' : 'text-brown-light hover:text-brown-medium'
-                    }`}
-                    title="Marcar como principal"
-                  >
+                  <button type="button" onClick={() => handleSetPrimary(index)} className={`p-1 rounded transition-colors ${image.isPrimary ? 'text-brown-dark' : 'text-brown-light hover:text-brown-medium'}`} title="Marcar como principal">
                     <Star size={15} fill={image.isPrimary ? 'currentColor' : 'none'} />
                   </button>
-
-                  {/* Eliminar */}
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(index)}
-                    className="p-1 rounded hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors"
-                    title="Eliminar"
-                  >
+                  <button type="button" onClick={() => handleRemove(index)} className="p-1 rounded hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors" title="Eliminar">
                     <X size={15} />
                   </button>
-
-                  {/* Mover derecha */}
-                  <button
-                    type="button"
-                    onClick={() => moveImage(index, 'right')}
-                    disabled={index === images.length - 1}
-                    className="p-1 rounded hover:bg-beige text-brown-medium disabled:opacity-20 transition-colors"
-                    title="Mover adelante"
-                  >
+                  <button type="button" onClick={() => moveImage(index, 'right')} disabled={index === images.length - 1} className="p-1 rounded hover:bg-beige text-brown-medium disabled:opacity-20 transition-colors" title="Mover adelante">
                     <ChevronRight size={15} />
                   </button>
                 </div>
