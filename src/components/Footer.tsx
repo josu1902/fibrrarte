@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Instagram } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -19,13 +18,8 @@ export default function Footer() {
 
         {/* Logo + tagline */}
         <div className="flex flex-col items-center sm:items-start gap-1.5">
-          <Image
-            src="/img/logo/logo.png"
-            alt="Fibrarte"
-            width={120}
-            height={30}
-            className="object-contain h-7 w-auto opacity-80"
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/img/logo/logo.png" alt="Fibrarte" className="object-contain h-7 w-auto opacity-80" />
           <p className="text-cream/35 text-xs">Souvenirs personalizados en MDF</p>
         </div>
 
