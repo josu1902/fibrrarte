@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,32 +21,31 @@ export async function POST(request: NextRequest) {
 
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!validTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WebP and GIF are allowed.' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large. Maximum size is 5MB.' }, { status: 400 });
+      return NextResponse.json({ error: 'File too large. Maximum 5MB.' }, { status: 400 });
     }
 
-    const ext = file.name.split('.').pop() || 'jpg';
-    const sanitizedName = file.name
-      .replace(/\.[^.]+$/, '')
-      .replace(/[^a-zA-Z0-9]/g, '-')
-      .toLowerCase()
-      .substring(0, 30);
-    const filename = `${Date.now()}-${sanitizedName}.${ext}`;
+    const cloudinaryForm = new FormData();
+    cloudinaryForm.append('file', file);
+    cloudinaryForm.append('upload_preset', 'fibrarte');
+    cloudinaryForm.append('folder', 'fibrarte');
 
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
+    const res = await fetch('https://api.cloudinary.com/v1_1/dzykkbjhs/image/upload', {
+      method: 'POST',
+      body: cloudinaryForm,
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      console.error('Cloudinary error:', err);
+      return NextResponse.json({ error: 'Error uploading to Cloudinary' }, { status: 500 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(join(uploadsDir, filename), buffer);
-
-    const url = `/uploads/${filename}`;
-    return NextResponse.json({ url, filename }, { status: 201 });
+    const data = await res.json();
+    return NextResponse.json({ url: data.secure_url }, { status: 201 });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Error uploading file' }, { status: 500 });

@@ -135,8 +135,7 @@ export default function ImageUpload({ images, onChange, onDelete }: ImageUploadP
                 </div>
 
                 <div className="relative h-28">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={image.url} alt={image.alt || `Imagen ${index + 1}`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <Image src={image.url} alt={image.alt || `Imagen ${index + 1}`} fill className="object-cover" />
                 </div>
 
                 {image.isPrimary && (
