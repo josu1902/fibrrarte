@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Trash2 } from 'lucide-react';
+import { deleteProduct } from '@/app/actions/products';
 
 interface DeleteProductButtonProps {
   id: number;
@@ -21,8 +22,7 @@ export default function DeleteProductButton({ id, name }: DeleteProductButtonPro
 
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Error deleting product');
+      await deleteProduct(id);
       toast.success('Producto eliminado');
       router.refresh();
     } catch {

@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
 import ProductForm from '@/components/admin/ProductForm';
 
-export default function NuevoProductoPage() {
+export default async function NuevoProductoPage() {
+  const categories = await prisma.category.findMany({ orderBy: { order: 'asc' } });
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-8">
@@ -16,7 +19,7 @@ export default function NuevoProductoPage() {
         <h1 className="font-heading text-3xl font-bold text-brown-dark">Agregar Producto</h1>
       </div>
 
-      <ProductForm mode="create" />
+      <ProductForm mode="create" categories={categories} />
     </div>
   );
 }

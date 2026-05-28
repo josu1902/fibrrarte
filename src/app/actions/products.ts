@@ -1,17 +1,18 @@
 'use server';
 
+import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
-function checkAuth() {
-  const cookieStore = cookies();
-  const token = cookieStore.get('fibrarte-token')?.value;
-  if (!token || !verifyToken(token)) throw new Error('No autorizado');
+function requireAuth() {
+  const token = cookies().get('fibrarte-token')?.value;
+  if (!token || !verifyToken(token)) {
+    throw new Error('No autorizado');
+  }
 }
 
-export async function createProductAction(data: {
+export async function createProduct(data: {
   name: string;
   description: string;
   price: number;
@@ -20,57 +21,54 @@ export async function createProductAction(data: {
   categoryId: number;
   active: boolean;
   order: number;
-}) {
-  checkAuth();
-  const product = await prisma.product.create({
-    data,
-    include: { category: true, images: true },
-  });
-  revalidatePath('/admin/productos');
+}): Promise<{ id: number }> {
+  requireAuth();
+  const product = await prisma.product.create({ data });
+  revalidatePath('/');
   return { id: product.id };
 }
 
-export async function updateProductAction(
+export async function updateProduct(
   id: number,
   data: {
-    name: string;
-    description: string;
-    price: number;
-    measures: string | null;
-    whatsappMsg: string | null;
-    categoryId: number;
-    active: boolean;
-    order: number;
+    name?: string;
+    description?: string;
+    price?: number;
+    measures?: string | null;
+    whatsappMsg?: string | null;
+    categoryId?: number;
+    active?: boolean;
+    order?: number;
   }
-) {
-  checkAuth();
+): Promise<void> {
+  requireAuth();
   await prisma.product.update({ where: { id }, data });
-  revalidatePath('/admin/productos');
+  revalidatePath('/');
 }
 
-export async function saveImageAction(
+export async function addProductImage(
   productId: number,
-  url: string,
-  alt: string | null,
-  isPrimary: boolean
-) {
-  checkAuth();
-  if (isPrimary) {
+  image: { url: string; alt?: string | null; isPrimary: boolean }
+): Promise<void> {
+  requireAuth();
+  if (image.isPrimary) {
     await prisma.productImage.updateMany({ where: { productId }, data: { isPrimary: false } });
   }
-  await prisma.productImage.create({ data: { url, alt, isPrimary, productId } });
+  await prisma.productImage.create({
+    data: { url: image.url, alt: image.alt || null, isPrimary: image.isPrimary, productId },
+  });
 }
 
-export async function deleteImageAction(imageId: number, productId: number) {
-  checkAuth();
+export async function removeProductImage(productId: number, imageId: number): Promise<void> {
+  requireAuth();
   await prisma.productImage.delete({ where: { id: imageId, productId } });
 }
 
-export async function updateImagesAction(
+export async function updateProductImages(
   productId: number,
   updates: { id: number; isPrimary: boolean; order: number }[]
-) {
-  checkAuth();
+): Promise<void> {
+  requireAuth();
   await prisma.productImage.updateMany({ where: { productId }, data: { isPrimary: false } });
   for (const u of updates) {
     await prisma.productImage.update({
@@ -78,4 +76,11 @@ export async function updateImagesAction(
       data: { isPrimary: u.isPrimary, order: u.order },
     });
   }
+}
+
+export async function deleteProduct(id: number): Promise<void> {
+  requireAuth();
+  await prisma.product.delete({ where: { id } });
+  revalidatePath('/admin/productos');
+  revalidatePath('/');
 }
