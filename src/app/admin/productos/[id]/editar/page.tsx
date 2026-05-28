@@ -12,16 +12,13 @@ export default async function EditarProductoPage({ params }: PageProps) {
   const id = parseInt(params.id);
   if (isNaN(id)) notFound();
 
-  const [product, categories] = await Promise.all([
-    prisma.product.findUnique({
-      where: { id },
-      include: {
-        category: true,
-        images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] },
-      },
-    }),
-    prisma.category.findMany({ orderBy: { order: 'asc' } }),
-  ]);
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] },
+    },
+  });
 
   if (!product) notFound();
 
@@ -41,7 +38,7 @@ export default async function EditarProductoPage({ params }: PageProps) {
         <p className="text-brown-medium text-sm mt-1">{product.name}</p>
       </div>
 
-      <ProductForm mode="edit" product={serializedProduct} initialCategories={categories} />
+      <ProductForm mode="edit" product={serializedProduct} />
     </div>
   );
 }
