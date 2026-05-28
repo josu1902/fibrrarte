@@ -8,24 +8,17 @@ import { prisma } from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  let products: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
-  let categories: Awaited<ReturnType<typeof prisma.category.findMany>> = [];
-
-  try {
-    [products, categories] = await Promise.all([
-      prisma.product.findMany({
-        where: { active: true },
-        include: {
-          category: true,
-          images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] },
-        },
-        orderBy: [{ category: { order: 'asc' } }, { order: 'asc' }, { createdAt: 'desc' }],
-      }),
-      prisma.category.findMany({ orderBy: { order: 'asc' } }),
-    ]);
-  } catch {
-    // Si Prisma falla, renderiza igual con arrays vacíos
-  }
+  const [products, categories] = await Promise.all([
+    prisma.product.findMany({
+      where: { active: true },
+      include: {
+        category: true,
+        images: { orderBy: [{ isPrimary: 'desc' }, { order: 'asc' }] },
+      },
+      orderBy: [{ category: { order: 'asc' } }, { order: 'asc' }, { createdAt: 'desc' }],
+    }).catch(() => []),
+    prisma.category.findMany({ orderBy: { order: 'asc' } }).catch(() => []),
+  ]);
 
   return (
     <main className="min-h-screen">
