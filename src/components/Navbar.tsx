@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { Instagram, Menu, X } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -32,13 +31,11 @@ export default function Navbar() {
 
           {/* Logo */}
           <button onClick={() => scrollTo('#inicio')} className="flex items-center">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/img/logo/logo.png"
               alt="Fibrarte"
-              width={637}
-              height={509}
               className="object-contain h-8 w-auto"
-              priority
             />
           </button>
 
