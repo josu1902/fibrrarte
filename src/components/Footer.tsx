@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Instagram } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -9,66 +10,107 @@ const INSTAGRAM = process.env.NEXT_PUBLIC_INSTAGRAM || 'https://www.instagram.co
 const scrollTo = (id: string) =>
   document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
 
+const linkClass = "text-cream/45 hover:text-gold transition-colors text-sm cursor-pointer block py-0.5";
+const titleClass = "text-gold/80 text-xs font-semibold uppercase tracking-widest mb-4";
+
 export default function Footer() {
   return (
     <footer style={{ backgroundColor: '#1a0c05' }} className="border-t border-gold/10">
 
-      {/* Fila principal */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+      {/* Columnas principales */}
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
-        {/* Logo + tagline */}
-        <div className="flex flex-col items-center sm:items-start gap-1.5">
+        {/* Col 1 — Marca */}
+        <div className="flex flex-col gap-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/img/logo/logo.png" alt="Fibrarte" className="object-contain h-7 w-auto opacity-80" />
-          <p className="text-cream/35 text-xs">Souvenirs personalizados en MDF</p>
+          <img src="/img/logo/logo.png" alt="Fibrarte" className="h-8 w-auto object-contain opacity-90" />
+          <p className="text-cream/70 text-sm font-medium">Souvenirs personalizados en MDF</p>
+          <p className="text-cream/35 text-xs leading-relaxed">
+            Creamos piezas únicas para eventos, regalos y ocasiones especiales. Cada trabajo hecho con dedicación desde Salta, Argentina.
+          </p>
+          <div className="flex items-center gap-3 mt-1">
+            <a
+              href={INSTAGRAM}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="w-9 h-9 rounded-full border border-gold/20 flex items-center justify-center text-cream/40 hover:text-gold hover:border-gold/50 transition-all"
+            >
+              <Instagram size={16} />
+            </a>
+            <a
+              href={`https://wa.me/${WHATSAPP}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="w-9 h-9 rounded-full border border-gold/20 flex items-center justify-center text-cream/40 hover:text-gold hover:border-gold/50 transition-all"
+            >
+              <FaWhatsapp size={16} />
+            </a>
+          </div>
         </div>
 
-        {/* Links */}
-        <nav className="flex items-center gap-1 text-xs text-cream/40">
-          {[
-            { label: 'Inicio',    id: '#inicio' },
-            { label: 'Catálogo', id: '#productos' },
-            { label: 'Nosotros', id: '#nosotros' },
-            { label: 'Contacto', id: '#contacto' },
-          ].map((link, i, arr) => (
-            <span key={link.id} className="flex items-center gap-1">
-              <button
-                onClick={() => scrollTo(link.id)}
-                className="hover:text-cream/80 transition-colors"
-              >
-                {link.label}
-              </button>
-              {i < arr.length - 1 && <span className="text-cream/20">·</span>}
-            </span>
-          ))}
-        </nav>
+        {/* Col 2 — Navegación */}
+        <div>
+          <p className={titleClass}>Navegación</p>
+          <nav className="flex flex-col">
+            <button onClick={() => scrollTo('#inicio')} className={linkClass + " text-left"}>Inicio</button>
+            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Catálogo</button>
+            <Link href="/trabajos" className={linkClass}>Nuestros Trabajos</Link>
+            <button onClick={() => scrollTo('#nosotros')} className={linkClass + " text-left"}>Nosotros</button>
+            <button onClick={() => scrollTo('#contacto')} className={linkClass + " text-left"}>Contacto</button>
+          </nav>
+        </div>
 
-        {/* Redes */}
-        <div className="flex items-center gap-4">
-          <a
-            href={INSTAGRAM}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-cream/40 hover:text-cream/80 text-xs transition-colors"
-          >
-            <Instagram size={13} />
-            Instagram
-          </a>
-          <a
-            href={`https://wa.me/${WHATSAPP}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-cream/40 hover:text-cream/80 text-xs transition-colors"
-          >
-            <FaWhatsapp size={13} />
-            WhatsApp
-          </a>
+        {/* Col 3 — Productos */}
+        <div>
+          <p className={titleClass}>Productos</p>
+          <nav className="flex flex-col">
+            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Imanes personalizados</button>
+            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Portacelulares</button>
+            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Centros de mesa</button>
+            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Llaveros</button>
+            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Souvenirs de eventos</button>
+          </nav>
+        </div>
+
+        {/* Col 4 — Contacto */}
+        <div>
+          <p className={titleClass}>Contacto</p>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-start gap-2">
+              <svg className="text-gold/50 mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span className="text-cream/45 text-sm">Salta Capital, Argentina</span>
+            </div>
+            <a
+              href={`https://wa.me/${WHATSAPP}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-2 group"
+            >
+              <FaWhatsapp size={14} className="text-gold/50 mt-0.5 shrink-0 group-hover:text-gold transition-colors" />
+              <span className="text-cream/45 text-sm group-hover:text-gold transition-colors">+54 9 387 571-7430</span>
+            </a>
+            <div className="flex items-start gap-2">
+              <svg className="text-gold/50 mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span className="text-cream/25 text-sm italic">tu@email.com</span>
+            </div>
+          </div>
         </div>
 
       </div>
 
-      {/* Línea secundaria */}
-      <div className="border-t border-gold/[0.07] py-3 text-center">
+      {/* Línea divisoria */}
+      <div className="max-w-6xl mx-auto px-6 sm:px-10">
+        <div className="h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(212,160,84,0.3), transparent)' }} />
+      </div>
+
+      {/* Copyright */}
+      <div className="py-4 text-center">
         <p className="text-cream/20 text-xs">
           © {new Date().getFullYear()} Fibrarte · Todos los derechos reservados
         </p>
