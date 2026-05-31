@@ -53,7 +53,7 @@ function FooterNav() {
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#1a0c05' }} className="border-t border-gold/20">
+    <footer style={{ backgroundColor: '#1a0c05' }} className="border-t border-gold/10">
 
       {/* Columnas principales */}
       <div className="max-w-6xl mx-auto px-6 sm:px-10 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">

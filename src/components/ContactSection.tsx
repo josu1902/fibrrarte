@@ -19,7 +19,7 @@ export default function ContactSection() {
           </p>
         </div>
 
-        <div className="h-px mb-7" style={{ background: 'linear-gradient(to right, transparent, rgba(212,160,84,0.4), transparent)' }} />
+        <div className="h-px mb-7" style={{ background: 'linear-gradient(to right, transparent, rgba(212,160,84,0.18), transparent)' }} />
 
         <h2 className="font-heading text-2xl font-bold text-cream mb-1">¿Tenés una idea?</h2>
         <p className="text-cream/50 text-sm mb-6">La hacemos realidad. Consultanos sin compromiso.</p>
