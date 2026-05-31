@@ -1,7 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import ProductsSection from '@/components/ProductsSection';
-import TestimonialsSection from '@/components/TestimonialsSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { prisma } from '@/lib/prisma';
@@ -26,7 +25,6 @@ export default async function Home() {
       <Navbar />
       <Hero />
       <ProductsSection initialProducts={products} initialCategories={categories} />
-      <TestimonialsSection />
       <ContactSection />
       <Footer />
     </main>
