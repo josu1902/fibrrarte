@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Instagram, Menu, X } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -10,6 +12,8 @@ const INSTAGRAM = process.env.NEXT_PUBLIC_INSTAGRAM || 'https://www.instagram.co
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open,     setOpen]     = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -17,10 +21,16 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollTo = (id: string) => {
+  const handleScrollLink = (id: string) => {
     setOpen(false);
-    document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+    if (isHome) {
+      document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = '/' + id;
+    }
   };
+
+  const navLinkClass = "px-4 py-2 text-sm font-medium text-cream/70 hover:text-cream transition-colors rounded-lg hover:bg-white/5";
 
   return (
     <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 bg-dark-bg/90 backdrop-blur-md border-b border-gold/10 ${
@@ -30,56 +40,45 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
 
           {/* Logo */}
-          <button onClick={() => scrollTo('#inicio')} className="flex items-center">
+          <Link href="/" className="flex items-center py-2 pl-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/img/logo/logo.png"
               alt="Fibrarte"
-              className="object-contain h-8 w-auto"
+              className="object-contain h-9 w-auto"
             />
-          </button>
+          </Link>
 
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-1">
-            <button
-              onClick={() => scrollTo('#inicio')}
-              className="px-4 py-2 text-sm font-medium text-cream/70 hover:text-cream transition-colors rounded-lg hover:bg-white/5"
-            >
+            <button onClick={() => handleScrollLink('#inicio')} className={navLinkClass}>
               Inicio
             </button>
-            <button
-              onClick={() => scrollTo('#productos')}
-              className="px-4 py-2 text-sm font-medium text-cream/70 hover:text-cream transition-colors rounded-lg hover:bg-white/5"
-            >
+            <button onClick={() => handleScrollLink('#productos')} className={navLinkClass}>
               Catálogo
             </button>
-            <button
-              onClick={() => scrollTo('#nosotros')}
-              className="px-4 py-2 text-sm font-medium text-cream/70 hover:text-cream transition-colors rounded-lg hover:bg-white/5"
-            >
+            <Link href="/trabajos" className={navLinkClass}>
+              Trabajos
+            </Link>
+            <button onClick={() => handleScrollLink('#nosotros')} className={navLinkClass}>
               Nosotros
             </button>
-            <button
-              onClick={() => scrollTo('#contacto')}
-              className="px-4 py-2 text-sm font-medium text-cream/70 hover:text-cream transition-colors rounded-lg hover:bg-white/5"
-            >
+            <button onClick={() => handleScrollLink('#contacto')} className={navLinkClass}>
               Contacto
             </button>
 
             <div className="w-px h-5 bg-white/10 mx-2" />
 
-            {/* Instagram */}
             <a
               href={INSTAGRAM}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-cream/70 hover:text-cream transition-colors rounded-lg hover:bg-white/5"
+              className={navLinkClass + " flex items-center gap-2"}
             >
               <Instagram size={15} />
               Instagram
             </a>
 
-            {/* WhatsApp — botón destacado */}
             <a
               href={`https://wa.me/${WHATSAPP}`}
               target="_blank"
@@ -107,25 +106,32 @@ export default function Navbar() {
         <div className="md:hidden bg-dark-bg/98 border-t border-gold/10 backdrop-blur-md">
           <div className="px-5 py-5 flex flex-col gap-1">
             <button
-              onClick={() => scrollTo('#inicio')}
+              onClick={() => handleScrollLink('#inicio')}
               className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors"
             >
               Inicio
             </button>
             <button
-              onClick={() => scrollTo('#productos')}
+              onClick={() => handleScrollLink('#productos')}
               className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors"
             >
               Catálogo
             </button>
+            <Link
+              href="/trabajos"
+              onClick={() => setOpen(false)}
+              className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors block"
+            >
+              Trabajos
+            </Link>
             <button
-              onClick={() => scrollTo('#nosotros')}
+              onClick={() => handleScrollLink('#nosotros')}
               className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors"
             >
               Nosotros
             </button>
             <button
-              onClick={() => scrollTo('#contacto')}
+              onClick={() => handleScrollLink('#contacto')}
               className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors"
             >
               Contacto

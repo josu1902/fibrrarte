@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
+import WhatsAppButton from '@/components/WhatsAppButton';
 import './globals.css';
 
 const playfair = Playfair_Display({
@@ -24,11 +25,17 @@ export const metadata: Metadata = {
     'Fibrarte: productos artesanales personalizados en MDF y fibrofácil. Souvenirs, imanes, portacelulares, llaveros y más, hechos con dedicación en Salta Capital, Argentina.',
   keywords: ['MDF', 'personalizado', 'souvenirs', 'artesanal', 'Salta', 'Argentina', 'Fibrarte'],
   authors: [{ name: 'Fibrarte' }],
+  icons: {
+    icon: [{ url: '/img/logo/logo.png', type: 'image/png' }],
+    shortcut: '/img/logo/logo.png',
+    apple: { url: '/img/logo/logo.png', sizes: '180x180', type: 'image/png' },
+  },
   openGraph: {
     title: 'Fibrarte - Productos Personalizados en MDF',
     description: 'Productos artesanales personalizados en MDF. Hechos con dedicación en Salta, Argentina.',
     type: 'website',
     locale: 'es_AR',
+    images: [{ url: '/img/logo/logo.png' }],
   },
 };
 
@@ -41,6 +48,7 @@ export default function RootLayout({
     <html lang="es" className={`${playfair.variable} ${inter.variable}`}>
       <body className="font-body bg-cream text-brown-dark antialiased">
         {children}
+        <WhatsAppButton />
         <Toaster
           position="top-right"
           toastOptions={{
