@@ -19,7 +19,7 @@ export default function ContactSection() {
           </p>
         </div>
 
-        <div className="h-px bg-gold/10 mb-7" />
+        <div className="h-px mb-7" style={{ background: 'linear-gradient(to right, transparent, rgba(212,160,84,0.4), transparent)' }} />
 
         <h2 className="font-heading text-2xl font-bold text-cream mb-1">¿Tenés una idea?</h2>
         <p className="text-cream/50 text-sm mb-6">La hacemos realidad. Consultanos sin compromiso.</p>
@@ -29,7 +29,8 @@ export default function ContactSection() {
             href={`https://wa.me/${WHATSAPP}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20c05c] text-white font-semibold text-sm transition-all duration-300"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:shadow-[0_0_16px_rgba(212,160,84,0.35)] text-dark-bg"
+            style={{ background: 'linear-gradient(135deg, #D4A054, #C8906A)' }}
           >
             <FaWhatsapp size={16} />
             Consultar por WhatsApp
@@ -38,7 +39,7 @@ export default function ContactSection() {
             href={INSTAGRAM}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gold/25 bg-white/5 hover:bg-white/10 hover:border-gold/40 text-cream font-semibold text-sm transition-all duration-300"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-gold/40 bg-white/5 hover:bg-gold/10 hover:border-gold/60 text-gold font-semibold text-sm transition-all duration-300"
           >
             <Instagram size={14} />
             Seguinos en Instagram
