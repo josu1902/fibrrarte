@@ -1,21 +1,59 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Instagram } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 
 const WHATSAPP  = process.env.NEXT_PUBLIC_WHATSAPP  || '5493875717430';
 const INSTAGRAM = process.env.NEXT_PUBLIC_INSTAGRAM || 'https://www.instagram.com/fibrarte.stores/';
 
-const scrollTo = (id: string) =>
-  document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
-
 const linkClass = "text-cream/45 hover:text-gold transition-colors text-sm cursor-pointer block py-0.5";
 const titleClass = "text-gold/80 text-xs font-semibold uppercase tracking-widest mb-4";
+const divider = { background: 'linear-gradient(to right, transparent, rgba(212,160,84,0.25), transparent)' };
+
+function FooterNav() {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  const scrollTo = (id: string) => {
+    if (isHome) {
+      document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = '/' + id;
+    }
+  };
+
+  return (
+    <>
+      {/* Col 2 — Navegación */}
+      <div>
+        <p className={titleClass}>Navegación</p>
+        <nav className="flex flex-col">
+          <button onClick={() => scrollTo('#inicio')} className={linkClass + " text-left"}>Inicio</button>
+          <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Catálogo</button>
+          <Link href="/trabajos" className={linkClass}>Nuestros Trabajos</Link>
+          <button onClick={() => scrollTo('#nosotros')} className={linkClass + " text-left"}>Nosotros</button>
+          <button onClick={() => scrollTo('#contacto')} className={linkClass + " text-left"}>Contacto</button>
+        </nav>
+      </div>
+
+      {/* Col 3 — Productos */}
+      <div>
+        <p className={titleClass}>Productos</p>
+        <nav className="flex flex-col">
+          <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Imanes</button>
+          <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Portacelulares</button>
+          <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Centros de Mesa</button>
+        </nav>
+      </div>
+    </>
+  );
+}
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#1a0c05' }} className="border-t border-gold/10">
+    <footer style={{ backgroundColor: '#1a0c05' }} className="border-t border-gold/20">
 
       {/* Columnas principales */}
       <div className="max-w-6xl mx-auto px-6 sm:px-10 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -50,29 +88,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Col 2 — Navegación */}
-        <div>
-          <p className={titleClass}>Navegación</p>
-          <nav className="flex flex-col">
-            <button onClick={() => scrollTo('#inicio')} className={linkClass + " text-left"}>Inicio</button>
-            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Catálogo</button>
-            <Link href="/trabajos" className={linkClass}>Nuestros Trabajos</Link>
-            <button onClick={() => scrollTo('#nosotros')} className={linkClass + " text-left"}>Nosotros</button>
-            <button onClick={() => scrollTo('#contacto')} className={linkClass + " text-left"}>Contacto</button>
-          </nav>
-        </div>
-
-        {/* Col 3 — Productos */}
-        <div>
-          <p className={titleClass}>Productos</p>
-          <nav className="flex flex-col">
-            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Imanes personalizados</button>
-            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Portacelulares</button>
-            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Centros de mesa</button>
-            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Llaveros</button>
-            <button onClick={() => scrollTo('#productos')} className={linkClass + " text-left"}>Souvenirs de eventos</button>
-          </nav>
-        </div>
+        <FooterNav />
 
         {/* Col 4 — Contacto */}
         <div>
@@ -93,12 +109,6 @@ export default function Footer() {
               <FaWhatsapp size={14} className="text-gold/50 mt-0.5 shrink-0 group-hover:text-gold transition-colors" />
               <span className="text-cream/45 text-sm group-hover:text-gold transition-colors">+54 9 387 571-7430</span>
             </a>
-            <div className="flex items-start gap-2">
-              <svg className="text-gold/50 mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-              </svg>
-              <span className="text-cream/25 text-sm italic">tu@email.com</span>
-            </div>
           </div>
         </div>
 
@@ -106,12 +116,12 @@ export default function Footer() {
 
       {/* Línea divisoria */}
       <div className="max-w-6xl mx-auto px-6 sm:px-10">
-        <div className="h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(212,160,84,0.3), transparent)' }} />
+        <div className="h-px" style={divider} />
       </div>
 
       {/* Copyright */}
       <div className="py-4 text-center">
-        <p className="text-cream/20 text-xs">
+        <p className="text-cream/30 text-xs">
           © {new Date().getFullYear()} Fibrarte · Todos los derechos reservados
         </p>
       </div>
