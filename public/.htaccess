@@ -1,0 +1,24 @@
+# MIME types correctos para evitar rechazo en navegadores estrictos
+AddType text/css;charset=utf-8 .css
+AddType application/javascript;charset=utf-8 .js
+AddType image/png .png
+AddType image/jpeg .jpg .jpeg
+AddType image/webp .webp
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType font/woff .woff
+
+# Headers de seguridad y caché para archivos estáticos
+<IfModule mod_headers.c>
+    # Archivos con hash (Next.js _next/static) — cacheable por 1 año
+    <FilesMatch "\.(css|js|woff2|woff|png|jpg|jpeg|webp|svg|ico)$">
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+
+    # No cachear HTML
+    <FilesMatch "\.(html?)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
