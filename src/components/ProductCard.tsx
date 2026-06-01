@@ -55,14 +55,15 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Imagen — clickeable → detalle */}
       <Link href={`/productos/${product.id}`} className="block overflow-hidden">
-        <div className="relative h-52 bg-beige">
+        <div className="relative aspect-square bg-beige">
           {primaryImage && !imgError ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={primaryImage.url}
               alt={primaryImage.alt || product.name}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
               onError={() => setImgError(true)}
+              loading="lazy"
             />
           ) : (
             <div style={{ position: 'absolute', inset: 0 }} className="flex flex-col items-center justify-center text-brown-light/40">
