@@ -53,12 +53,12 @@ export default function Hero() {
           className="text-cream/95 text-lg sm:text-xl font-light leading-snug mb-3 max-w-lg"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          Souvenirs personalizados y productos en MDF hechos a pedido.
+          Souvenirs y piezas en MDF con grabado láser, hechos a pedido.
         </p>
 
         {/* Descripción — mejor contraste */}
         <p className="text-cream/70 text-sm sm:text-base leading-relaxed mb-9 max-w-md">
-          Creamos recuerdos únicos para cumpleaños, eventos y regalos personalizados.
+          Creamos recuerdos únicos para cumpleaños, eventos y ocasiones especiales.
         </p>
 
         {/* CTA único */}
