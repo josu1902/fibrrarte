@@ -25,11 +25,6 @@ export const metadata: Metadata = {
     'Fibrarte: productos artesanales personalizados en MDF y fibrofácil. Souvenirs, imanes, portacelulares, llaveros y más, hechos con dedicación en Salta Capital, Argentina.',
   keywords: ['MDF', 'personalizado', 'souvenirs', 'artesanal', 'Salta', 'Argentina', 'Fibrarte'],
   authors: [{ name: 'Fibrarte' }],
-  icons: {
-    icon: [{ url: '/img/logo/logo.png', type: 'image/png' }],
-    shortcut: '/img/logo/logo.png',
-    apple: { url: '/img/logo/logo.png', sizes: '180x180', type: 'image/png' },
-  },
   openGraph: {
     title: 'Fibrarte - Productos Personalizados en MDF',
     description: 'Productos artesanales personalizados en MDF. Hechos con dedicación en Salta, Argentina.',
