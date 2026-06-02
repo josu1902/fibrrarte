@@ -10,7 +10,7 @@ export default function Hero() {
     <section
       id="inicio"
       className="relative flex flex-col items-center justify-center overflow-hidden bg-dark-bg"
-      style={{ minHeight: '88vh' }}
+      style={{ minHeight: '100dvh' }}
     >
       {/* Glow cálido centrado */}
       <div

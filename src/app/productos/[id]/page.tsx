@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, MessageCircle, Ruler, Tag } from 'lucide-react';
+import { ArrowLeft, Ruler, Tag } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { prisma } from '@/lib/prisma';
 import ImageGallery from './ImageGallery';
 
@@ -122,7 +123,7 @@ export default async function ProductoPage({ params }: PageProps) {
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 text-white font-semibold text-lg px-8 py-4 rounded-full transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 w-full"
             >
-              <MessageCircle size={22} />
+              <FaWhatsapp size={22} />
               Consultar por WhatsApp
             </a>
 
