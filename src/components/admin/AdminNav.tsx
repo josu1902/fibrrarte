@@ -4,13 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { LayoutDashboard, Package, ClipboardList, Tag, ExternalLink, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Package, ClipboardList, Tag, ExternalLink, LogOut, Menu, X, Settings } from 'lucide-react';
 
 const navItems = [
-  { label: 'Dashboard',   href: '/admin/dashboard',   icon: LayoutDashboard },
-  { label: 'Productos',   href: '/admin/productos',    icon: Package },
-  { label: 'Categorías',  href: '/admin/categorias',   icon: Tag },
-  { label: 'Pedidos',     href: '/admin/pedidos',      icon: ClipboardList },
+  { label: 'Dashboard',   href: '/admin/dashboard',       icon: LayoutDashboard },
+  { label: 'Productos',   href: '/admin/productos',        icon: Package },
+  { label: 'Categorías',  href: '/admin/categorias',       icon: Tag },
+  { label: 'Pedidos',     href: '/admin/pedidos',          icon: ClipboardList },
+  { label: 'Configuración', href: '/admin/configuracion',  icon: Settings },
 ];
 
 export default function AdminNav() {
