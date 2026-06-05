@@ -57,9 +57,6 @@ export default function Navbar() {
             <button onClick={() => handleScrollLink('#productos')} className={navLinkClass}>
               Catálogo
             </button>
-            <Link href="/trabajos" className={navLinkClass}>
-              Trabajos
-            </Link>
             <button onClick={() => handleScrollLink('#nosotros')} className={navLinkClass}>
               Nosotros
             </button>
@@ -117,13 +114,6 @@ export default function Navbar() {
             >
               Catálogo
             </button>
-            <Link
-              href="/trabajos"
-              onClick={() => setOpen(false)}
-              className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors block"
-            >
-              Trabajos
-            </Link>
             <button
               onClick={() => handleScrollLink('#nosotros')}
               className="w-full text-left px-4 py-3 text-sm font-medium text-cream/80 hover:text-cream hover:bg-white/5 rounded-xl transition-colors"
