@@ -66,6 +66,21 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  if (!auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const { status } = await req.json();
+    const order = await prisma.order.update({
+      where: { id: parseInt(params.id) },
+      data: { status },
+    });
+    return NextResponse.json(order);
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: 'Error al actualizar estado' }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   if (!auth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   await prisma.order.delete({ where: { id: parseInt(params.id) } });

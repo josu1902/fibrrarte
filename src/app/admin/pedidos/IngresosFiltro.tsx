@@ -15,7 +15,11 @@ export default function IngresosFiltro() {
   const params = useSearchParams();
   const current = params.get('periodo') || 'mes';
 
-  const set = (v: string) => router.push(`/admin/pedidos?periodo=${v}`);
+  const set = (v: string) => {
+    const next = new URLSearchParams(params.toString());
+    next.set('periodo', v);
+    router.push(`/admin/pedidos?${next.toString()}`);
+  };
 
   return (
     <div className="flex flex-wrap gap-2">
