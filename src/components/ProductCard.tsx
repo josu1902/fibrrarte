@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { Ruler, ZoomIn } from 'lucide-react';
+import { Ruler, ArrowRight } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa6';
 
 interface ProductImage {
@@ -40,13 +40,7 @@ function formatPrice(price: string | number | { toString(): string }): string {
   }).format(num);
 }
 
-export default function ProductCard({
-  product,
-  onImageClick,
-}: {
-  product: Product;
-  onImageClick?: (url: string) => void;
-}) {
+export default function ProductCard({ product }: { product: Product }) {
   const [imgError, setImgError] = useState(false);
   const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP || '5493875717430';
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
@@ -56,60 +50,46 @@ export default function ProductCard({
   const truncate = (text: string, max = 60) =>
     text.length <= max ? text : text.slice(0, max).trim() + '…';
 
-  const imageContent = (
-    <div className="relative aspect-square bg-beige overflow-hidden">
-      {primaryImage && !imgError ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={primaryImage.url}
-          alt={primaryImage.alt || product.name}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-          onError={() => setImgError(true)}
-          loading="lazy"
-        />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0 }} className="flex flex-col items-center justify-center text-brown-light/40">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <polyline points="21 15 16 10 5 21" />
-          </svg>
-          <span className="text-xs mt-2">Sin imagen</span>
-        </div>
-      )}
-
-      {/* Badge categoría */}
-      <span className="absolute top-2 left-2 z-10 bg-brown-dark/75 backdrop-blur-sm text-white text-xs font-medium px-2 py-0.5 rounded-full leading-tight">
-        {product.category.name}
-      </span>
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 z-10 bg-brown-dark/0 group-hover:bg-brown-dark/25 transition-all duration-300 flex items-center justify-center">
-        <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-brown-dark text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-          <ZoomIn size={13} /> Ver foto
-        </span>
-      </div>
-    </div>
-  );
-
   return (
     <div className="bg-cream rounded-2xl overflow-hidden border border-beige hover:border-brown-light/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 flex flex-col group">
 
-      {/* Imagen: lightbox si hay callback, detalle si no */}
-      {onImageClick && primaryImage && !imgError ? (
-        <button
-          type="button"
-          onClick={() => onImageClick(primaryImage.url)}
-          className="block w-full text-left focus:outline-none"
-        >
-          {imageContent}
-        </button>
-      ) : (
-        <Link href={`/productos/${product.id}`} className="block">
-          {imageContent}
-        </Link>
-      )}
+      {/* Imagen → página de detalle */}
+      <Link href={`/productos/${product.id}`} className="block overflow-hidden">
+        <div className="relative aspect-square bg-beige">
+          {primaryImage && !imgError ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={primaryImage.url}
+              alt={primaryImage.alt || product.name}
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+              onError={() => setImgError(true)}
+              loading="lazy"
+            />
+          ) : (
+            <div style={{ position: 'absolute', inset: 0 }} className="flex flex-col items-center justify-center text-brown-light/40">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span className="text-xs mt-2">Sin imagen</span>
+            </div>
+          )}
+
+          {/* Badge categoría */}
+          <span className="absolute top-2 left-2 z-10 bg-brown-dark/75 backdrop-blur-sm text-white text-xs font-medium px-2 py-0.5 rounded-full leading-tight">
+            {product.category.name}
+          </span>
+
+          {/* Overlay hover */}
+          <div className="absolute inset-0 z-10 bg-brown-dark/0 group-hover:bg-brown-dark/20 transition-all duration-300 flex items-center justify-center">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-brown-dark text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+              Ver detalle <ArrowRight size={13} />
+            </span>
+          </div>
+        </div>
+      </Link>
 
       {/* Contenido */}
       <div className="p-3 sm:p-5 flex flex-col flex-1">

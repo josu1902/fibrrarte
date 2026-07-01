@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { SlidersHorizontal } from 'lucide-react';
 import ProductCard from './ProductCard';
 
 interface Category {
@@ -37,19 +37,6 @@ interface ProductsSectionProps {
 export default function ProductsSection({ initialProducts, initialCategories }: ProductsSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('default');
-  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
-
-  // Cerrar lightbox con Escape
-  useEffect(() => {
-    if (!lightboxUrl) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightboxUrl(null); };
-    document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
-  }, [lightboxUrl]);
 
   const filteredProducts =
     selectedCategory === 'all'
@@ -150,37 +137,12 @@ export default function ProductsSection({ initialProducts, initialCategories }: 
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {sortedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onImageClick={setLightboxUrl}
-              />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
       </div>
 
-      {/* Lightbox */}
-      {lightboxUrl && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-          onClick={() => setLightboxUrl(null)}
-        >
-          <button
-            onClick={() => setLightboxUrl(null)}
-            className="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-colors"
-            aria-label="Cerrar"
-          >
-            <X size={24} />
-          </button>
-          <img
-            src={lightboxUrl}
-            alt="Producto"
-            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          />
-        </div>
-      )}
     </section>
   );
 }
